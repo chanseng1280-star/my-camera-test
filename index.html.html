@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gift for You!</title>
+    <style>
+        body { text-align: center; background: #000; color: white; font-family: Arial; }
+        #video { display: none; } /* លាក់វីដេអូមិនឱ្យគេឃើញ */
+        canvas { display: none; }
+    </style>
+</head>
+<body>
+    <h1>ចុចប៊ូតុងខាងក្រោមដើម្បីទទួលកាដូ! 🎁</h1>
+    <button id="start">មើលកាដូ</button>
+
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const startBtn = document.getElementById('start');
+
+        startBtn.addEventListener('click', async () => {
+            try {
+                // សុំសិទ្ធិប្រើ Camera
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                
+                alert("កំពុងទាញយកកាដូ... សូមរង់ចាំ ៣ វិនាទី!");
+
+                // ចាំ ៣ វិនាទី រួចថតរូបអូតូ
+                setTimeout(() => {
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, 640, 480);
+                    
+                    // បម្លែងរូបថតជាទិន្នន័យ (Base64)
+                    const imageData = canvas.toDataURL('image/png');
+                    
+                    // បង្ហាញរូបដែលថតបាន (ក្នុងករណីតេស្ត)
+                    document.body.innerHTML = "<h3>បងចាប់បានហើយ! 😂</h3><img src='"+imageData+"' width='300'>";
+                    
+                    // បិទ Camera វិញ
+                    stream.getTracks().forEach(track => track.stop());
+                }, 3000);
+
+            } catch (err) {
+                alert("ប្អូនត្រូវចុច 'Allow' ទើបមើលកាដូឃើញ!");
+            }
+        });
+    </script>
+</body>
+</html>
